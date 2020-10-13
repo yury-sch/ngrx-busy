@@ -1,0 +1,15 @@
+.example-table-container {
+  position: relative;
+  max-height: 400px;
+  overflow: auto;
+}
+
+/* Column Widths */
+.mat-column-number,
+.mat-column-state {
+  max-width: 64px;
+}
+
+.mat-column-created {
+  max-width: 124px;
+}

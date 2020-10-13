@@ -1,0 +1,115 @@
+// Animation config
+$swift-ease-in-out-duration: 500ms !default;
+$ease-in-out-curve-function: cubic-bezier(0.35, 0, 0.25, 1) !default;
+$ngrx-progress-spinner-stroke-rotate-fallback-duration: 10 * 1000ms !default;
+$ngrx-progress-spinner-stroke-rotate-fallback-ease: cubic-bezier(0.87, 0.03, 0.33, 1) !default;
+
+$pi: 3.14159265;
+$_ngrx-progress-spinner-default-radius: 45px;
+$_ngrx-progress-spinner-default-circumference: $pi * $_ngrx-progress-spinner-default-radius * 2;
+
+@mixin _noop-animation() {
+  @at-root ._ngrx-animation-noopable#{&} {
+    transition: none;
+    animation: none;
+    @content;
+  }
+}
+
+.ngrx-progress-spinner {
+  display: block;
+  position: relative;
+
+  svg {
+    position: absolute;
+    transform: rotate(-90deg);
+    top: 0;
+    left: 0;
+    transform-origin: center;
+    overflow: visible;
+  }
+
+  circle {
+    @include _noop-animation();
+    fill: transparent;
+    transform-origin: center;
+    transition: stroke-dashoffset 225ms linear;
+  }
+
+  &.ngrx-progress-spinner-indeterminate-animation {
+    @include _noop-animation();
+    animation: ngrx-progress-spinner-linear-rotate $swift-ease-in-out-duration * 4
+    linear infinite;
+
+    circle {
+      @include _noop-animation();
+      transition-property: stroke;
+      // Note: we multiply the duration by 8, because the animation is spread out in 8 stages.
+      animation-duration: $swift-ease-in-out-duration * 8;
+      animation-timing-function: $ease-in-out-curve-function;
+      animation-iteration-count: infinite;
+    }
+  }
+
+  &.ngrx-progress-spinner-indeterminate-fallback-animation {
+    @include _noop-animation();
+    animation: ngrx-progress-spinner-stroke-rotate-fallback
+    $ngrx-progress-spinner-stroke-rotate-fallback-duration
+    $ngrx-progress-spinner-stroke-rotate-fallback-ease
+    infinite;
+
+    circle {
+      @include _noop-animation();
+      transition-property: stroke;
+    }
+  }
+}
+
+@keyframes ngrx-progress-spinner-linear-rotate {
+  0%       { transform: rotate(0deg); }
+  100%     { transform: rotate(360deg); }
+}
+
+@at-root {
+  $start: (1 - 0.05) * $_ngrx-progress-spinner-default-circumference; // start the animation at 5%
+  $end: (1 - 0.8) * $_ngrx-progress-spinner-default-circumference; // end the animation at 80%
+  $fallback-iterations: 4;
+
+  @keyframes ngrx-progress-spinner-stroke-rotate-100 {
+    // NOTE: this is replaced by js for any diameter other that 100
+    0%        { stroke-dashoffset: $start;  transform: rotate(0); }
+    12.5%     { stroke-dashoffset: $end;    transform: rotate(0); }
+    12.5001%  { stroke-dashoffset: $end;    transform: rotateX(180deg) rotate(72.5deg); }
+    25%       { stroke-dashoffset: $start;  transform: rotateX(180deg) rotate(72.5deg); }
+
+    25.0001%  { stroke-dashoffset: $start;  transform: rotate(270deg); }
+    37.5%     { stroke-dashoffset: $end;    transform: rotate(270deg); }
+    37.5001%  { stroke-dashoffset: $end;    transform: rotateX(180deg) rotate(161.5deg); }
+    50%       { stroke-dashoffset: $start;  transform: rotateX(180deg) rotate(161.5deg); }
+
+    50.0001%  { stroke-dashoffset: $start;  transform: rotate(180deg); }
+    62.5%     { stroke-dashoffset: $end;    transform: rotate(180deg); }
+    62.5001%  { stroke-dashoffset: $end;    transform: rotateX(180deg) rotate(251.5deg); }
+    75%       { stroke-dashoffset: $start;  transform: rotateX(180deg) rotate(251.5deg); }
+
+    75.0001%  { stroke-dashoffset: $start;  transform: rotate(90deg); }
+    87.5%     { stroke-dashoffset: $end;    transform: rotate(90deg); }
+    87.5001%  { stroke-dashoffset: $end;    transform: rotateX(180deg) rotate(341.5deg); }
+    100%      { stroke-dashoffset: $start;  transform: rotateX(180deg) rotate(341.5deg); }
+  }
+
+  @keyframes ngrx-progress-spinner-stroke-rotate-fallback {
+    @for $i from 0 through $fallback-iterations {
+      $percent: 100 / $fallback-iterations * $i;
+      $offset: 360 / $fallback-iterations;
+      #{$percent}% { transform: rotate(#{$i * (360 * 3 + $offset)}deg); }
+    }
+  }
+}
+
+
+.ngrx-progress-spinner, .ngrx-spinner {
+  circle {
+    stroke: #3f51b5;
+  }
+}

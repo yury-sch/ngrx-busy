@@ -1,27 +1,92 @@
-# Ngrx
+**NgrxBusy** can show busy/loading indicators with Cold **or Hot** observable streams.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.4.
+## Getting Started
 
-## Development server
+Import the `NgrxBusyModule` in your root application module:
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+```ts
+import {NgModule} from '@angular/core';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {NgrxBusyModule} from 'ngrx-busy';
 
-## Code scaffolding
+@NgModule({
+  imports: [
+    ...
+    NgrxBusyModule
+  ]
+})
+export class AppModule {
+}
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Wrap every http request with busy operator by interceptor:
 
-## Build
+```ts
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {pushBusy} from 'ngrx-busy';
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+@Injectable()
+export class BusyInterceptor implements HttpInterceptor {
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    return pushBusy(next.handle(request));
+  }
+}
+```
 
-## Running unit tests
+Reference to `ngrxBusy` directive with `withBusy` operator:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```ts
+import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {withBusy} from 'ngrx-busy';
 
-## Running end-to-end tests
+@Component({
+  selector: 'some',
+  template: `
+        <ngrx-busy>...content</ngrx-busy>
+    `
+})
+class SomeComponent implements OnInit {
+  @ViewChild(NgrxBusy) busy: NgrxBusy;
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+  constructor(private http: HttpClient) {
+  }
 
-## Further help
+  ngOnInit() {
+    this.http.get('...').pipe(withBusy(() => this.busy)).subscribe();
+  }
+}
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Overriding Defaults
+
+The default values of options can be overriden by configuring the provider of the `BusyModule`.
+
+In the root application module, you can do this:
+
+```ts
+import {NgModule} from '@angular/core';
+import {NgBusyModule, BusyConfig} from 'ng-busy';
+import {CustomBusySpinner} from '...'
+
+@NgModule({
+  imports: [
+    NgBusyModule
+  ],
+  providers: [
+    {
+      provide: NGRX_BUSY_DEFAULT_OPTIONS,
+      useValue: {
+        backdrop: false,
+        template: CustomBusySpinner
+      }
+    }
+  ],
+  entryComponents: [
+    CustomBusySpinner
+  ]
+})
+export class AppModule
+```

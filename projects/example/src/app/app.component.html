@@ -1,0 +1,29 @@
+<div class="mat-elevation-z8">
+  <ngrx-busy #busy>
+    <mat-table [dataSource]="data | async"
+               class="example-table-container"
+               matSort matSortActive="created" matSortDisableClear matSortDirection="desc">
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{row.title}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="state">
+        <mat-header-cell  *matHeaderCellDef>State</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{row.state}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="created">
+        <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+          Created
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">{{row.created_at | date}}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="['created', 'state', 'title']"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: ['created', 'state', 'title'];"></mat-row>
+    </mat-table>
+
+    <mat-paginator [length]="total | async" [pageSize]="30"></mat-paginator>
+  </ngrx-busy>
+</div>

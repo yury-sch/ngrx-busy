@@ -1,0 +1,6 @@
+<ng-content></ng-content>
+<div *ngIf="loading"
+     class="ngrx-busy-overlap"
+     [ngClass]="{'ngrx-busy-overlap-backdrop': defaults.backdrop && loading}">
+  <ng-container #loader></ng-container>
+</div>
