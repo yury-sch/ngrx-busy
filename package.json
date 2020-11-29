@@ -1,15 +1,17 @@
 {
-  "name": "ngrx",
-  "version": "0.0.0",
+  "name": "ngrx-busy",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "lint": "ng lint"
   },
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YuryScherbakov/ngrx-busy.git"
+  },
+  "author": "Yury Scherbakov",
   "dependencies": {
     "@angular/animations": "~9.1.4",
     "@angular/cdk": "^9.2.4",
