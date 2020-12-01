@@ -2,7 +2,7 @@
 
 [![npm Downloads](https://img.shields.io/npm/dw/ngrx-busy.svg?style=flat&logo=npm)](https://www.npmjs.com/package/ngrx-busy)
 
-![demo](https://raw.githubusercontent.com/YuryScherbakov/YuryScherbakov.github.io/main/ngrx-busy/demo.gif)
+![demo](https://raw.githubusercontent.com/YuryScherbakov/ngrx-busy/main/demo.gif)
 
 ## Getting Started
 
