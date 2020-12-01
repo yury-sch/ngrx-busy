@@ -10,7 +10,7 @@
       "prefix": "ngrx",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/ngrx-busy/tsconfig.lib.json",
             "project": "projects/ngrx-busy/ng-package.json"
@@ -68,7 +68,6 @@
               "projects/example/src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
               "projects/example/src/styles.scss"
             ],
             "scripts": []
@@ -84,7 +83,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -133,7 +131,6 @@
               "projects/example/src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
               "projects/example/src/styles.scss"
             ],
             "scripts": []

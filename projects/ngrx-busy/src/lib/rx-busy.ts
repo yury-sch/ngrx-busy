@@ -3,6 +3,7 @@ import {InnerSubscriber} from 'rxjs/internal-compatibility';
 import {first, flatMap, map} from 'rxjs/operators';
 
 import {NgrxBusy} from './busy';
+import {SimpleInnerSubscriber} from 'rxjs/internal/innerSubscribe';
 
 declare type BusyAccessor = () => NgrxBusy | null;
 
@@ -45,7 +46,9 @@ class PushBusyOperator<T> implements Operator<T, T> {
   private* findBusy(innerSubscriber: Subscriber<T>): IterableIterator<WithBusySubscriber<T>> {
     if (innerSubscriber instanceof WithBusySubscriber) { yield innerSubscriber; }
     // @ts-ignore
-    if (innerSubscriber instanceof InnerSubscriber) { yield* this.findBusy(innerSubscriber.parent); }
+    // if (innerSubscriber instanceof InnerSubscriber || innerSubscriber instanceof SimpleInnerSubscriber) { yield* this.findBusy(innerSubscriber.parent); }
+    // @ts-ignore
+    if (innerSubscriber.parent !== undefined) { yield* this.findBusy(innerSubscriber.parent); }
     // @ts-ignore
     if (innerSubscriber.destination !== undefined) { yield* this.findBusy(innerSubscriber.destination); }
   }

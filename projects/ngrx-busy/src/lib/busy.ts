@@ -1,13 +1,17 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, ComponentFactoryResolver,
+  Component,
+  ComponentFactoryResolver,
+  ComponentRef,
   ElementRef,
   HostBinding,
   Inject,
   InjectionToken,
   OnDestroy,
-  Type, ViewChild, ViewContainerRef,
+  Type,
+  ViewChild,
+  ViewContainerRef,
   ViewEncapsulation
 } from '@angular/core';
 import {of, Subject} from 'rxjs';
@@ -41,7 +45,7 @@ export const NGRX_BUSY_DEFAULT_OPTIONS =
     factory: NGRX_BUSY_DEFAULT_OPTIONS_FACTORY,
   });
 
-function NGRX_BUSY_DEFAULT_OPTIONS_FACTORY(): NgrxBusyDefaultOptions {
+export function NGRX_BUSY_DEFAULT_OPTIONS_FACTORY(): NgrxBusyDefaultOptions {
   return {backdrop: BASE_BACKDROP, /*delay: BASE_DELAY, minDuration: BASE_MIN_DURATION,*/ template: BASE_TEMPLATE};
 }
 
@@ -59,12 +63,12 @@ function NGRX_BUSY_DEFAULT_OPTIONS_FACTORY(): NgrxBusyDefaultOptions {
 export class NgrxBusy implements OnDestroy {
 
   private readonly unsubscribe$ = new Subject();
-  @ViewChild('loader', {read: ViewContainerRef}) loader;
+  @ViewChild('loader', {read: ViewContainerRef}) loader!: ViewContainerRef;
   @HostBinding('class.ngrx-busy-loading')
   // tslint:disable-next-line:variable-name
   private _loading = false;
   private counter = 0;
-  private initialized;
+  private initialized?: ComponentRef<any>;
 
   constructor(public elementRef: ElementRef,
               private readonly cdr: ChangeDetectorRef,
@@ -86,7 +90,7 @@ export class NgrxBusy implements OnDestroy {
     if (this.counter === 0) {
       this._loading = true;
       this.cdr.detectChanges();
-      const factory = this.resolver.resolveComponentFactory(this.defaults.template);
+      const factory = this.resolver.resolveComponentFactory(this.defaults.template || BASE_TEMPLATE);
       this.initialized = this.loader.createComponent(factory);
     }
     this.counter++;

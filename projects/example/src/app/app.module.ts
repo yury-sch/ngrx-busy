@@ -7,7 +7,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {NgrxBusyModule} from '../../../ngrx-busy/src/lib/busy.module';
+import {NgrxBusyModule} from 'projects/ngrx-busy/src/public-api'
 import {BusyInterceptor} from './busy-interceptor';
 
 @NgModule({

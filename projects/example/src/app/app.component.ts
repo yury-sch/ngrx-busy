@@ -1,38 +1,31 @@
-import {AfterViewInit, Component, OnDestroy, ViewChild} from '@angular/core';
+import {Component, OnDestroy, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
-import {merge, Observable, Subject} from 'rxjs';
-import {map, publishReplay, refCount, startWith, switchMap, takeUntil} from 'rxjs/operators';
+import {merge, Observable, of, Subject} from 'rxjs';
+import {map, publishReplay, refCount, switchMap, tap} from 'rxjs/operators';
 import {GithubIssue, GithubService} from './github.service';
-import {NgrxBusy} from '../../../ngrx-busy/src/lib/busy';
-import {withBusy} from '../../../ngrx-busy/src/lib/rx-busy';
+import {NgrxBusy, withBusy} from 'projects/ngrx-busy/src/public-api';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class AppComponent implements OnDestroy {
 
   private readonly unsubscribe$ = new Subject();
 
   data: Observable<GithubIssue[]>;
   total: Observable<number>;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(NgrxBusy) busy: NgrxBusy;
+  @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+  @ViewChild(NgrxBusy, {static: true}) busy!: NgrxBusy;
 
   constructor(private github: GithubService) {
-  }
 
-  ngAfterViewInit() {
-    this.sort.sortChange
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(() => this.paginator.pageIndex = 0);
-
-    const issues$ = merge(this.sort.sortChange, this.paginator.page).pipe(
-      startWith({}),
+    const issues$ = of({}).pipe(
+      switchMap(() => merge(this.sort.sortChange.pipe(tap(() => this.paginator.pageIndex = 0)), this.paginator.page, of({}))),
       switchMap(() => this.github.getRepoIssues(this.sort.active, this.sort.direction, this.paginator.pageIndex)),
       withBusy(() => this.busy),
       publishReplay(1), refCount()

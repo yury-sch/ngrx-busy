@@ -1,6 +1,6 @@
-<div class="mat-elevation-z8">
-  <ngrx-busy #busy>
-    <mat-table [dataSource]="data | async"
+<div class="container mat-elevation-z8">
+  <ngrx-busy>
+    <mat-table [dataSource]="data"
                class="example-table-container"
                matSort matSortActive="created" matSortDisableClear matSortDirection="desc">
       <ng-container matColumnDef="title">

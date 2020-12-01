@@ -1,17 +1,18 @@
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Inject,
-  Input, OnDestroy,
+  OnDestroy,
   OnInit,
   Optional,
-  PLATFORM_ID,
   ViewEncapsulation
 } from '@angular/core';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+import {Platform} from '@angular/cdk/platform';
+import {DOCUMENT} from '@angular/common';
 import {interval, Subject} from 'rxjs';
-import {distinctUntilChanged, filter, map, startWith, takeUntil, tap} from 'rxjs/operators';
+import {distinctUntilChanged, filter, map, startWith, takeUntil} from 'rxjs/operators';
 
 const BASE_SIZE = 100;
 const BASE_STROKE_WIDTH = 10;
@@ -91,7 +92,7 @@ export class NgrxSpinner implements OnInit, OnDestroy {
    * For most elements this is the document, but for the ones in the Shadow DOM we need to
    * use the shadow root.
    */
-  private styleRoot: Node;
+  private styleRoot!: Node;
 
   /** The diameter of the progress spinner (will set width and height of svg). */
   get diameter(): number { return this._diameter; }
@@ -106,15 +107,15 @@ export class NgrxSpinner implements OnInit, OnDestroy {
   }
 
   constructor(public elementRef: ElementRef<HTMLElement>,
+              platform: Platform,
               private readonly cdr: ChangeDetectorRef,
-              @Optional() @Inject(DOCUMENT) private document: any,
-              @Optional() @Inject(PLATFORM_ID) platformId?: object) {
+              @Optional() @Inject(DOCUMENT) private document: any) {
 
     interval(50).pipe(
       startWith(0),
       filter(() => !!this.elementRef && !!this.elementRef.nativeElement && !!this.elementRef.nativeElement.parentElement),
       map(() => {
-        const {width, height} = getComputedStyle(this.elementRef.nativeElement.parentElement);
+        const {width, height} = this.elementRef.nativeElement.parentElement ? getComputedStyle(this.elementRef.nativeElement.parentElement) : ({width: null, height: null});
         return {width, height};
       }),
       distinctUntilChanged((prev, cur) => prev.height === cur.height && prev.width === cur.width),
@@ -131,10 +132,7 @@ export class NgrxSpinner implements OnInit, OnDestroy {
       trackedDiameters.set(document.head, new Set<number>([BASE_SIZE]));
     }
 
-    const isBrowser: boolean = platformId ? isPlatformBrowser(platformId) : typeof document === 'object' && !!document;
-    const edge: boolean = isBrowser && /(edge)/i.test(navigator.userAgent);
-    const trident: boolean = isBrowser && /(msie|trident)/i.test(navigator.userAgent);
-    this.fallbackAnimation = edge || trident;
+    this.fallbackAnimation = platform.EDGE || platform.TRIDENT;
   }
 
   ngOnInit() {
