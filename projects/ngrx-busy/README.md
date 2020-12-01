@@ -1,5 +1,9 @@
 **NgrxBusy** can show busy/loading indicators with Cold **or Hot** observable streams.
 
+[![npm Downloads](https://img.shields.io/npm/dw/ngrx-busy.svg?style=flat&logo=npm)](https://www.npmjs.com/package/ngrx-busy)
+
+![demo](https://raw.githubusercontent.com/YuryScherbakov/YuryScherbakov.github.io/main/ngrx-busy/demo.gif)
+
 ## Getting Started
 
 Import the `NgrxBusyModule` in your root application module:
@@ -35,7 +39,7 @@ export class BusyInterceptor implements HttpInterceptor {
 }
 ```
 
-Reference to `ngrxBusy` directive with `withBusy` operator:
+Reference to `NgrxBusy` directive with `withBusy` operator:
 
 ```ts
 import {Component, OnInit} from '@angular/core';
@@ -49,7 +53,7 @@ import {withBusy} from 'ngrx-busy';
     `
 })
 class SomeComponent implements OnInit {
-  @ViewChild(NgrxBusy) busy: NgrxBusy;
+  @ViewChild(NgrxBusy, {static: true}) busy: NgrxBusy;
 
   constructor(private http: HttpClient) {
   }
@@ -68,12 +72,12 @@ In the root application module, you can do this:
 
 ```ts
 import {NgModule} from '@angular/core';
-import {NgBusyModule, BusyConfig} from 'ng-busy';
+import {NgrxBusyModule} from 'ngrx-busy';
 import {CustomBusySpinner} from '...'
 
 @NgModule({
   imports: [
-    NgBusyModule
+    NgrxBusyModule
   ],
   providers: [
     {
