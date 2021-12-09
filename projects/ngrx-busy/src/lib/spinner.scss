@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 // Animation config
 $swift-ease-in-out-duration: 500ms !default;
 $ease-in-out-curve-function: cubic-bezier(0.35, 0, 0.25, 1) !default;
@@ -100,8 +102,8 @@ $_ngrx-progress-spinner-default-circumference: $pi * $_ngrx-progress-spinner-def
 
   @keyframes ngrx-progress-spinner-stroke-rotate-fallback {
     @for $i from 0 through $fallback-iterations {
-      $percent: 100 / $fallback-iterations * $i;
-      $offset: 360 / $fallback-iterations;
+      $percent: math.div(100, $fallback-iterations) * $i;
+      $offset: math.div(360, $fallback-iterations);
       #{$percent}% { transform: rotate(#{$i * (360 * 3 + $offset)}deg); }
     }
   }
