@@ -4,24 +4,34 @@
 
 ![demo](https://raw.githubusercontent.com/YuryScherbakov/ngrx-busy/main/demo.gif)
 
-## Getting Started
+## Simple usage
 
-Import the `NgrxBusyModule` in your root application module:
+Just wrap your awaitable content with `<ngrx-busy>` directive and refer to it with `withBusy` operator:
 
 ```ts
-import {NgModule} from '@angular/core';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {NgrxBusyModule} from 'ngrx-busy';
+import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {NgrxBusy, withBusy} from 'ngrx-busy';
 
-@NgModule({
-  imports: [
-    ...
-    NgrxBusyModule
-  ]
+@Component({
+  selector: 'some',
+  template: `
+        <ngrx-busy>...content</ngrx-busy>
+    `
 })
-export class AppModule {
+class SomeComponent implements OnInit {
+  @ViewChild(NgrxBusy, {static: true}) busy: NgrxBusy;
+
+  constructor(private http: HttpClient) {
+  }
+
+  ngOnInit() {
+    this.http.get('...').pipe(withBusy(() => this.busy)).subscribe(data => { });
+  }
 }
 ```
+
+## Configure
 
 Wrap every http request with busy operator by interceptor:
 
@@ -39,28 +49,23 @@ export class BusyInterceptor implements HttpInterceptor {
 }
 ```
 
-Reference to `NgrxBusy` directive with `withBusy` operator:
+Import the `NgrxBusyModule` in your root application module and provide `BusyInterceptor`:
 
 ```ts
-import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {withBusy} from 'ngrx-busy';
+import {NgModule} from '@angular/core';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {NgrxBusyModule} from 'ngrx-busy';
 
-@Component({
-  selector: 'some',
-  template: `
-        <ngrx-busy>...content</ngrx-busy>
-    `
+@NgModule({
+  imports: [
+    HttpClientModule,
+    NgrxBusyModule
+  ],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: BusyInterceptor, multi: true},
+  ]
 })
-class SomeComponent implements OnInit {
-  @ViewChild(NgrxBusy, {static: true}) busy: NgrxBusy;
-
-  constructor(private http: HttpClient) {
-  }
-
-  ngOnInit() {
-    this.http.get('...').pipe(withBusy(() => this.busy)).subscribe();
-  }
+export class AppModule {
 }
 ```
 
@@ -72,14 +77,17 @@ In the root application module, you can do this:
 
 ```ts
 import {NgModule} from '@angular/core';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {NgrxBusyModule} from 'ngrx-busy';
 import {CustomBusySpinner} from '...'
 
 @NgModule({
   imports: [
+    HttpClientModule,
     NgrxBusyModule
   ],
   providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: BusyInterceptor, multi: true},
     {
       provide: NGRX_BUSY_DEFAULT_OPTIONS,
       useValue: {
