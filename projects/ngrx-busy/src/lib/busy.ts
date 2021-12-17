@@ -19,11 +19,11 @@ import {delay, takeUntil} from 'rxjs/operators';
 import {NgrxSpinner} from './spinner';
 
 const BASE_BACKDROP = true;
-const BASE_DELAY = 0;
-const BASE_MIN_DURATION = 0;
+// const BASE_DELAY = 0;
+// const BASE_MIN_DURATION = 0;
 const BASE_TEMPLATE = NgrxSpinner;
 
-/** Default `mat-progress-spinner` options that can be overridden. */
+/** Default `ngrx-busy` options that can be overridden. */
 export interface NgrxBusyDefaultOptions {
   /** A faded backdrop will be shown behind the indicator if true. */
   backdrop?: boolean;
@@ -38,7 +38,7 @@ export interface NgrxBusyDefaultOptions {
   template?: Type<any>;
 }
 
-/** Injection token to be used to override the default options for `mat-progress-spinner`. */
+/** Injection token to be used to override the default options for `ngrx-busy`. */
 export const NGRX_BUSY_DEFAULT_OPTIONS =
   new InjectionToken<NgrxBusyDefaultOptions>('ngrx-busy-default-options', {
     providedIn: 'root',
