@@ -71,9 +71,9 @@ export class AppModule {
 
 ## Overriding Defaults
 
-The default values of options can be overriden by configuring the provider of the `BusyModule`.
+The default values of options can be overridden by configuring the provider of the `BusyModule`.
 
-In the root application module, you can do this:
+You can do this in the root application module:
 
 ```ts
 import {NgModule} from '@angular/core';
