@@ -1,14 +1,14 @@
 {
   "name": "ngrx-busy",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "Show busy/loading indicators on any observable or promise",
   "author": "Yury Scherbakov",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:YuryScherbakov/ngrx-busy.git"
+    "url": "git+ssh://git@github.com/yury-sch/ngrx-busy.git"
   },
-  "homepage": "https://github.com/YuryScherbakov/ngrx-busy/tree/main/projects/ngrx-busy",
+  "homepage": "https://github.com/yury-sch/ngrx-busy/tree/main/projects/ngrx-busy",
   "keywords": [
     "angular",
     "angular2",
